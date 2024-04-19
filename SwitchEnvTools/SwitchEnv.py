@@ -44,18 +44,24 @@ class SwitchEnv(object):
     @staticmethod
     def modify_server(server):
         file_path = r'C:\Program Files\YunShu\SetupSettings.json'
-        # 读取文件内容
-        with open(file_path, 'r') as file:
-            settings = json.load(file)
-        # 修改文件内容
-        settings['Server'] = server
-        # 写入文件
         try:
-            with open(file_path, 'w') as file:
+            # 读取文件内容
+            with open(file_path, 'r') as file:
+                file.seek(0)
+                settings = json.load(file)
+            # 修改文件内容
+            settings['Server'] = server
+        except Exception as e:
+            print(e)
+            messagebox.showinfo("提示", r"打开配置文件失败: C:\Program Files\YunShu\SetupSettings.json")
+            sys.exit()
+        try:
+            # 写入文件
+            with open(file_path, 'w', encoding='utf-8') as file:
                 json.dump(settings, file, indent=4)
         except Exception as e:
             print(e)
-            messagebox.showinfo("提示", "请确认实例是否已开启自保护功能")
+            messagebox.showinfo("提示", r"写入配置文件失败: 请确认实例是否已开启自保护功能")
             sys.exit()
 
     def set_sp_server(self, button):
@@ -170,6 +176,3 @@ if __name__ == '__main__':
 
     obj = SwitchEnv()
     obj.main()
-
-
-
