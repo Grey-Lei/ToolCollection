@@ -46,15 +46,16 @@ class SwitchEnv(object):
         file_path = r'C:\Program Files\YunShu\SetupSettings.json'
         try:
             # 读取文件内容
-            with open(file_path, 'r') as file:
-                file.seek(0)
+            with open(file_path, 'r', encoding='utf-8-sig') as file:
+                # print(file.read())
                 settings = json.load(file)
             # 修改文件内容
+            print("settings: ", settings)
             settings['Server'] = server
         except Exception as e:
             print(e)
             messagebox.showinfo("提示", r"打开配置文件失败: C:\Program Files\YunShu\SetupSettings.json")
-            sys.exit()
+            sys.exit(1)
         try:
             # 写入文件
             with open(file_path, 'w', encoding='utf-8') as file:
@@ -62,7 +63,7 @@ class SwitchEnv(object):
         except Exception as e:
             print(e)
             messagebox.showinfo("提示", r"写入配置文件失败: 请确认实例是否已开启自保护功能")
-            sys.exit()
+            sys.exit(1)
 
     def set_sp_server(self, button):
         if button.cget("text") == "正式环境":
@@ -145,34 +146,34 @@ class SwitchEnv(object):
 
 if __name__ == '__main__':
     # 判断是否以管理员权限运行脚本
-    if ctypes.windll.shell32.IsUserAnAdmin() == 0:
-        messagebox.showinfo("提示", "请以管理员身份运行程序")
-        sys.exit()
-
-    # 判断当前客户端是否已注销
-    # 1.未注销，提示用户手动注销
-    key_path = r'SOFTWARE\WOW6432Node\YunShu'
-    value_name = "Logout"
-
-    try:
-        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path)
-        # 读取指定值
-        value, value_type = winreg.QueryValueEx(key, value_name)
-        # 关闭注册表键
-        winreg.CloseKey(key)
-        # 返回读取到的值和值类型
-    except FileNotFoundError:
-        print(f"注册表键 {key_path} 或值 {value_name} 不存在。")
-        sys.exit()
-    except PermissionError:
-        print(f"没有足够的权限访问注册表键 {key_path}。")
-        sys.exit()
-    except Exception as e:
-        print(f"读取注册表时发生错误: {e}")
-        sys.exit()
-    if value == 0:
-        messagebox.showinfo("提示", "请注销客户端后再试！")
-        sys.exit()
+    # if ctypes.windll.shell32.IsUserAnAdmin() == 0:
+    #     messagebox.showinfo("提示", "请以管理员身份运行程序")
+    #     sys.exit()
+    #
+    # # 判断当前客户端是否已注销
+    # # 1.未注销，提示用户手动注销
+    # key_path = r'SOFTWARE\WOW6432Node\YunShu'
+    # value_name = "Logout"
+    #
+    # try:
+    #     key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path)
+    #     # 读取指定值
+    #     value, value_type = winreg.QueryValueEx(key, value_name)
+    #     # 关闭注册表键
+    #     winreg.CloseKey(key)
+    #     # 返回读取到的值和值类型
+    # except FileNotFoundError:
+    #     print(f"注册表键 {key_path} 或值 {value_name} 不存在。")
+    #     sys.exit()
+    # except PermissionError:
+    #     print(f"没有足够的权限访问注册表键 {key_path}。")
+    #     sys.exit()
+    # except Exception as e:
+    #     print(f"读取注册表时发生错误: {e}")
+    #     sys.exit()
+    # if value == 0:
+    #     messagebox.showinfo("提示", "请注销客户端后再试！")
+    #     sys.exit()
 
     obj = SwitchEnv()
     obj.main()
