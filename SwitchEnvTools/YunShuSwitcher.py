@@ -65,7 +65,7 @@ def kill_yunshu_processes():
     try:
         for proc in psutil.process_iter(['pid', 'name']):
             try:
-                if proc.info['name'].lower().startswith('yunshu'):
+                if proc.info['name'].lower().startswith('yunshu') and proc.info['name'] != "YunShuSwitcher.exe":
                     process = psutil.Process(proc.info['pid'])
                     process.kill()
             except psutil.NoSuchProcess as e:
@@ -145,7 +145,7 @@ def switch_environment(server_url):
             messagebox.showerror("错误", "删除文件失败，程序将退出。")
             sys.exit(1)
     
-    # 6. 重启应用程序
+    # 6. 重启应用程序   
     if not restart_yunshu():
         sys.exit(1)
     
