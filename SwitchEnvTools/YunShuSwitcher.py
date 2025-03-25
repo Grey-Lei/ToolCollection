@@ -50,10 +50,14 @@ def update_config_file(server_url):
 def disable_scheduled_task():
     """禁用Windows计划任务"""
     try:
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # 隐藏窗口
+
         subprocess.run(
             ['schtasks', '/Change', '/TN', TASK_NAME, '/DISABLE'], 
             check=False, 
-            capture_output=True
+            capture_output=True,
+            startupinfo=startupinfo  # 添加 startupinfo
         )
         return True
     except Exception as e:
@@ -86,7 +90,10 @@ def restart_yunshu():
     """重启云枢应用程序"""
     try:
         if os.path.exists(YUNSHU_EXE_PATH):
-            subprocess.Popen(YUNSHU_EXE_PATH)
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # 隐藏窗口
+
+            subprocess.Popen(YUNSHU_EXE_PATH, startupinfo=startupinfo)  # 添加 startupinfo
             return True
         else:
             messagebox.showwarning("警告", f"无法找到云枢应用程序：{YUNSHU_EXE_PATH}")
